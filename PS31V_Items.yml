@@ -1,0 +1,97 @@
+# ============================================================
+# PS-31V — NEXUS HOLLOW 戦国鯖ソースコード用
+# ============================================================
+#
+# 【メモ】
+# ・近接/投擲ダメージはバニラの攻撃属性に乗せず、すべてMythicMobsスキル側の
+#   damageメカニクスで付与する。これにより「プレイヤー / Nexus Hollowモブ以外には
+#   一切ダメージが入らない」という要求を確実に満たす。
+# ・Nexus Hollowのモブは NexusHollow_Mobs.yml で定義したもの
+# ・Perk-A / Perk-B は専用アイテムをオフハンドに持っている状態で判定する。
+# ・使用可能レベル(剣/弓180以上)は実際に使用制限としてゲートする。
+# ・装弾数/リロードはプレイヤー変数で管理。
+#
+#
+# 【CustomModelData 割り当て表】
+#   313100 — PS31V 本体（ナイフ）
+#   313101 — PS31V Perk-A モジュール
+#   313102 — PS31V Perk-B モジュール
+#
+# ============================================================
+
+PS31V:
+  Id: IRON_SWORD
+  Display: '&b&lPS-31V'
+  CustomModelData: 313100
+  Attributes:
+    # バニラの攻撃ダメージを0にする（全ダメージはスキル側で制御）
+    # これによりSweep Attackが発生してもバニラダメージは0
+    MainHand:
+      attack_damage: 0
+      attack_speed: 4.0
+  Options:
+    Enchantable: false
+    Repairable: false
+    Unbreakable: true
+    ItemModel: nexus:ps31v
+  Lore:
+    - '&7近未来的な見た目をしたナイフ。'
+    - '&7投擲が可能で、斬るより投げたほうが威力が高い。'
+    - '&7背中に命中させるとボーナスで威力が+10される。'
+    - ''
+    - '&c※プレイヤーとNexus Hollowのモブにしかダメージを与えられない'
+    - ''
+    - '&7威力(近接)　 : &f10 &8(Mob: +25)'
+    - '&7威力(投擲)　 : &f15 &8(Mob: +25)'
+    - '&7最大装弾数　 : &f8'
+    - '&7リロード時間 : &f3秒'
+    - '&7使用可能レベル: &f剣/弓 180以上'
+    - '&7耐久値　　　 : &f破壊不能'
+    - '&7強化　　　　 : &f不可'
+    - ''
+    - '&3「アクセス許可。クリアランスレベル5:<player.name>。」'
+  Skills:
+    # ---------- 近接攻撃 (左クリック) ----------
+    # canceleventでバニラ攻撃イベントをキャンセル。
+    # ダメージは完全にスキル側で制御する。
+    - cancelevent{sync=true} @Self ~onAttack
+    - skill{s=PS31V_MeleeEntry} @Trigger ~onAttack
+
+    # ---------- 投擲 (右クリック) ----------
+    # 【修正】~onInteract → ~onUse
+    # ~onInteract = エンティティに対して右クリックした時のみ発火
+    # ~onUse = アイテムを持って右クリックした時（空中でも発火）
+    - skill{s=PS31V_ThrowEntry} @Self ~onUse
+
+# ============================================================
+# Perk-A / Perk-B モジュール（オフハンド装備用アイテム）
+# ============================================================
+PS31V_PerkA:
+  Id: PRISMARINE_SHARD
+  Display: '&b&lPS-31V Perk-A'
+  CustomModelData: 313101
+  Options:
+    Enchantable: false
+    Unbreakable: true
+    ItemModel: nexus:ps31v_perk_a
+  NBT:
+    PS31V_PERKA: int/1
+  Lore:
+    - '&7PS-31V専用パークモジュール。'
+    - '&7オフハンドに持っている間、PS-31Vの最大装弾数が&f12&7になり、'
+    - '&7発射間隔(リロード時間)が短縮される。'
+
+PS31V_PerkB:
+  Id: PRISMARINE_CRYSTALS
+  Display: '&b&lPS-31V Perk-B'
+  CustomModelData: 313102
+  Options:
+    Enchantable: false
+    Unbreakable: true
+    ItemModel: nexus:ps31v_perk_b
+  NBT:
+    PS31V_PERKB: int/1
+  Lore:
+    - '&7PS-31V専用パークモジュール。'
+    - '&7オフハンドに持っている間、PS-31Vのダメージが&f+10&7され、'
+    - '&7着弾地点に小さい爆発が発生する。'

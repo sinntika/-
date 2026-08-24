@@ -1,0 +1,59 @@
+# ============================================================
+# Gauntlet of Ominous Trials: Replica — NEXUS HOLLOW 戦国鯖ソースコード用
+# ============================================================
+#
+# 【設計メモ】
+# ・近接/エネルギーダメージはバニラの攻撃属性に乗せず、すべて
+#   MythicMobsスキル側のdamageメカニクスで付与する。
+#   →「プレイヤー / Nexus Hollowモブ以外には一切ダメージが入らない」を確実に満たす。
+# ・Nexus Hollowのモブは NexusHollow_Mobs.yml の
+#   NH_HollowWraith / NH_CryptStalker / NH_NexusWarden （~onSpawnで addtag{tag=nexus_hollow} 済み）。
+# ・使用可能レベル（剣230以上 = AuraSkills Fighting 230以上）を実際にゲートする。
+#
+# 【実ダメージ仕様】
+#   近接    : プレイヤー 40 / Nexus Hollowモブ 540（40 +500）
+#   エネルギー: プレイヤー 10 / Nexus Hollowモブ 310（10 +300）
+#
+# 【ベースアイテム】IRON_SWORD
+#
+# 【スキル本体】Skills/Gauntlet_Skills.yml を参照。
+# ============================================================
+
+GauntletOfOminousTrials:
+  Id: IRON_SWORD
+  Display: '&e&lGauntlet of Ominous Trials: &6&lReplica'
+  CustomModelData: 320100
+  Attributes:
+    # バニラの攻撃ダメージを0に（全ダメージはスキル側で制御）
+    # →Sweep Attackが発生してもバニラダメージは0
+    MainHand:
+      attack_damage: 0
+      attack_speed: 4.0
+  Options:
+    Enchantable: false          # 強化不可（エンチャント不可）
+    Repairable: false           # 強化不可（金砨修理不可）
+    Unbreakable: true           # 破壊不能
+    ItemModel: nexus:gauntlet_replica
+  Lore:
+    - '&7試練の間で発見された「不吉な試練のガントレット」を'
+    - '&7限界まで再現した武器。'
+    - '&7手のひらから太陽光エネルギーを発射することができる。'
+    - ''
+    - '&c※プレイヤーとNexus Hollowのモブにしかダメージを与えられない'
+    - ''
+    - '&7威力(近接)　 : &f40 &8(Mob: +500)'
+    - '&7威力(エネルギー): &f10 &8(Mob: +300)'
+    - '&7使用可能レベル: &f剣 230以上'
+    - '&7耐久値　　　 : &f破壊不能'
+    - '&7強化　　　　 : &f不可'
+    - ''
+    - '&6右クリック: 太陽光エネルギーを発射'
+  Skills:
+    # ---------- 近接攻撃 (左クリック) ----------
+    # canceleventでバニラ攻撃イベントをキャンセル。ダメージは完全にスキル側で制御。
+    - cancelevent{sync=true} @Self ~onAttack
+    - skill{s=Gauntlet_MeleeEntry} @Trigger ~onAttack
+
+    # ---------- エネルギー発射 (右クリック) ----------
+    # ~onUse = アイテムを持って右クリックした時（空中でも発火）
+    - skill{s=Gauntlet_BeamEntry} @Self ~onUse

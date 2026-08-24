@@ -1,0 +1,33 @@
+# TenshoSeisenjin item file -> plugins/MythicMobs/Items/
+TenshoSeisenjin:
+  Id: NETHERITE_SWORD
+  Display: "<gradient:#4facfe:#e0eafc:#f9d423>天象・星穿刃</gradient>"
+  Lore:
+  - "<!i><gray>Nexus Hollowで発見された強力な遺失物。"
+  - "<!i><gray>昼夜の巡りという世界の理に抗い、"
+  - "<!i><gray>白昼の青空さえも穿つとされる伝説の刃。"
+  - "<!i><dark_gray>世界のあらゆる「常識」を無効化する、因果の特異点。"
+  - ""
+  - "<!i><gold>[ 性能 ]"
+  - "<!i><yellow>▪ 威力 : <white>100 <gray>(Mob: +400)"
+  - "<!i><yellow>▪ 使用可能レベル : <white>剣 200"
+  - "<!i><yellow>▪ 耐久値 : <aqua>破壊不能"
+  - "<!i><yellow>▪ 強化 : <red>不可"
+  - ""
+  - "<!i><light_purple>≪ Nexus Hollow レアドロップ ≫"
+  Attributes:
+    MainHand:
+      Damage: 100
+      AttackSpeed: 1.6
+  Options:
+    Unbreakable: true
+    Hide:
+    - ATTRIBUTES
+    - ENCHANTS
+    - UNBREAKABLE
+    Repairable: false
+    PreventEnchanting: true
+    PreventGrindstone: true
+    Glint: true
+  Skills:
+  - skill{s=TenshoSeisenjin_OnAttack} ~onAttack
